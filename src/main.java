@@ -1,34 +1,18 @@
 import java.sql.*;
+import java.time.LocalDate;
+
+import data_access_objects.CourseDAO;
+import data_access_objects.StudentDAO;
 
 class MySQLConnection {
   public static void main(String[] args) {
-	  String url = "jdbc:mysql://localhost:3306/sys";
-	  String username = "root";
-	  String password = "iloveangelina";
+	  // testing with student
+	  // StudentDAO sd = new StudentDAO();
+	  CourseDAO cd = new CourseDAO();
 	  
-	  try {
-		  Connection conn = DriverManager.getConnection(url, username, password);
-		  System.out.println("Database connected!");
-		  
-		  // Insert entry
-		  Statement stmt = conn.createStatement();
-		  stmt.executeUpdate("INSERT INTO Students (idStudent) VALUES (1)");
-		  
-		  // Execute query
-		  ResultSet rs = stmt.executeQuery("SELECT idStudent FROM Students");
-		  
-		  // Display the SQL query results
-		  while ( rs.next() ) {
-			  System.out.println(rs.getInt("idStudent"));
-		  }
-		  System.out.println("Worked");
-		  
-		  rs.close();
-		  stmt.close();
-		  conn.close();
-	  }
-	  catch (SQLException se) {
-		  throw new IllegalStateException("Cannot connect the database!", se);
-      }
+	  // cd.createCourseRecord("a", "b", "c");
+	  cd.deleteCourseRecord(1);
+	  // sd.createStudentRecord("Christina", "Kim", "2020-01-09", 2020);
+	  //sd.deleteStudentRecord(3);
   }
 }
