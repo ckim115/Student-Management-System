@@ -5,10 +5,10 @@ public class StudentDAO {
 	// An instance of Connection for accessing the database
 	private Connection conn = MySQLConnection.getConnection();
 	
-	public void createStudentRecord(String fname, String lname, String date, int year) {
+	public void createStudentRecord(String fname, String lname, String date) {
 		String sql = String.format("INSERT INTO Students "
-				+ "(first_name, last_name, birthdate, year) "
-				+ "VALUES ('%s', '%s', '%s', %d);", fname, lname, date, year);
+				+ "(first_name, last_name, birthdate) "
+				+ "VALUES ('%s', '%s', '%s');", fname, lname, date);
 		
 		try {
 			Statement stmt = conn.createStatement();
