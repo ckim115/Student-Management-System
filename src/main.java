@@ -11,10 +11,10 @@ class MySQLConnection {
 	  StudentDAO sd = new StudentDAO();
 	  CourseDAO cd = new CourseDAO();
 	  EnrollmentDAO ed = new EnrollmentDAO();
-	  
+	  sd.updateStudentRecord(4, "Angelina", "Kim", "2020-01-10");
 	  // ed.createEnrollmentRecord(6, 2, 0);
 	  // cd.createCourseRecord("a", "b", "c");
-	  cd.deleteCourseRecord(2);
+	  // cd.deleteCourseRecord(2);
 	  // sd.createStudentRecord("Christina", "Kim", "2020-01-09");
 	  // sd.deleteStudentRecord(3);
   }

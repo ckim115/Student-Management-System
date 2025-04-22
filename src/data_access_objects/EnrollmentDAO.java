@@ -40,4 +40,20 @@ public class EnrollmentDAO {
 		}
 		
 	}
+	
+	public void updateEnrollmentRecord(int id, int studentID, int courseID, int year) {
+		String sql = String.format("UPDATE Enrollments "
+				+ " SET studentID = %d, courseID = %d, year = %d"
+				+ " WHERE enrollmentID = %d;", id, studentID, courseID, year);
+		
+		try {
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+			System.out.println("Enrollment record updated.");
+			stmt.close();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }

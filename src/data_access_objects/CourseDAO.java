@@ -37,4 +37,20 @@ public class CourseDAO {
 		}
 		
 	}
+	
+	public void updateCourseRecord(int id, String course_name, String instructor, String semester) {
+		String sql = String.format("UPDATE Courses "
+				+ " SET course_name = '%s', instructor = '%s', semester = '%s'"
+				+ " WHERE courseID = %d;", id, course_name, instructor, semester);
+		
+		try {
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+			System.out.println("Enrollment record updated.");
+			stmt.close();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -37,4 +37,20 @@ public class StudentDAO {
 		}
 		
 	}
+	
+	public void updateStudentRecord(int id, String fname, String lname, String date) {
+		String sql = String.format("UPDATE Students "
+				+ " SET first_name = '%s', last_name = '%s', birthdate = '%s'"
+				+ " WHERE studentID = %d;", fname, lname, date, id);
+		
+		try {
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+			System.out.println("Student record updated.");
+			stmt.close();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }
