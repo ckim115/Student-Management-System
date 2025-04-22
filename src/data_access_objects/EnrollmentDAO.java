@@ -1,6 +1,7 @@
 package data_access_objects;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -55,5 +56,32 @@ public class EnrollmentDAO {
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * @param cols		The columns we are searching for in the database (such as "courseID, course_name")
+	 * @param cond		The conditions (such as "course_name = 'Math', instructor = 'Smith'")
+	 */
+	public void searchEnrollmentRecord(String cols, String cond) {
+		String sql = String.format("SELECT %s FROM Enrollments", cols);
+		if (cond.length() > 0) {
+			sql += String.format(" WHERE %s", cond);
+		}
+		
+		try {
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				System.out.println(rs.getString("enrollmentID"));
+			}
+			
+			System.out.println("Enrollment records returned.");
+			rs.close();
+			stmt.close();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

@@ -53,4 +53,31 @@ public class CourseDAO {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * @param cols		The columns we are searching for in the database (such as courseID)
+	 * @param cond		The conditions (such as "course_name = 'Math', instructor = 'Smith'")
+	 */
+	public void searchCourseRecord(String cols, String cond) {
+		String sql = String.format("SELECT %s FROM Courses", cols);
+		if (cond.length() > 0) {
+			sql += String.format(" WHERE %s", cond);
+		}
+		
+		try {
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				System.out.println(rs.getString("courseID"));
+			}
+			
+			System.out.println("Course records returned.");
+			rs.close();
+			stmt.close();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
 }
