@@ -9,12 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import data_access_objects.EnrollmentDAO;
+import data_structures.Enrollment;
 import javafx.collections.*;
 import javafx.geometry.Orientation;
 
 public class EnrollmentController {
     private Stage stage;
-    private ObservableList<EnrollmentDAO> enrollments = FXCollections.observableArrayList(EnrollmentDAO.fetchAllEnrollments());
+    private ObservableList<Enrollment> enrollments = FXCollections.observableArrayList(EnrollmentDAO.fetchAllEnrollments());
+    private EnrollmentDAO enrollmentDAO = new EnrollmentDAO();
     
     public EnrollmentController(Stage stage) {
         this.stage = stage;
@@ -24,19 +26,19 @@ public class EnrollmentController {
     	
     	//make table for enrollment
     	
-        TableView<EnrollmentDAO> table = new TableView<>(enrollments);
+        TableView<Enrollment> table = new TableView<>(enrollments);
         table.setPrefHeight(150);
 
-        TableColumn<EnrollmentDAO, Integer> idCol = new TableColumn<>("Enrollment ID");
+        TableColumn<Enrollment, Integer> idCol = new TableColumn<>("Enrollment ID");
         idCol.setCellValueFactory(new PropertyValueFactory<>("enrollmentID"));
 
-        TableColumn<EnrollmentDAO, Integer> courseCol = new TableColumn<>("Course ID");
+        TableColumn<Enrollment, Integer> courseCol = new TableColumn<>("Course ID");
         courseCol.setCellValueFactory(new PropertyValueFactory<>("courseID"));
 
-        TableColumn<EnrollmentDAO, Integer> studentCol = new TableColumn<>("Student ID");
+        TableColumn<Enrollment, Integer> studentCol = new TableColumn<>("Student ID");
         studentCol.setCellValueFactory(new PropertyValueFactory<>("studentID"));
 
-        TableColumn<EnrollmentDAO, Integer> enrollYear = new TableColumn<>("Enrollment Year");
+        TableColumn<Enrollment, Integer> enrollYear = new TableColumn<>("Enrollment Year");
         enrollYear.setCellValueFactory(new PropertyValueFactory<>("year"));
 
         table.getColumns().addAll(idCol, studentCol, courseCol, enrollYear);
@@ -152,8 +154,8 @@ public class EnrollmentController {
                 int sID = Integer.parseInt(studentID.getText());
                 int y = Integer.parseInt(year.getText());
 
-                EnrollmentDAO enrollment = new EnrollmentDAO(-1, cID, sID, y); // Adjust constructor as needed
-                enrollment.createEnrollmentRecord(cID, sID, y); // Instance method call
+                Enrollment enrollment = new Enrollment(-1, cID, sID, y); // Adjust constructor as needed
+                enrollmentDAO.createEnrollmentRecord(cID, sID, y); // Instance method call
 
                 // Refresh the list to show all enrollments
                 enrollments.setAll(EnrollmentDAO.fetchAllEnrollments());
@@ -170,8 +172,8 @@ public class EnrollmentController {
         
         deleteBtn.setOnAction(e -> {
             int id = Integer.parseInt(deleteEnrollmentID.getText());
-            EnrollmentDAO deleteGrade = new EnrollmentDAO(id);
-            deleteGrade.deleteEnrollmentRecord(id);
+            Enrollment deleteGrade = new Enrollment(id);
+            enrollmentDAO.deleteEnrollmentRecord(id);
             // Refresh the list to show all enrollments
             enrollments.setAll(EnrollmentDAO.fetchAllEnrollments());
             enrollments.setAll(enrollments);
@@ -189,7 +191,7 @@ public class EnrollmentController {
             try {
                 int id = Integer.parseInt(updateEnrollmentID.getText());
 
-                EnrollmentDAO existingEnrollment = enrollments.stream()
+                Enrollment existingEnrollment = enrollments.stream()
                     .filter(s -> s.getEnrollmentID() == id)
                     .findFirst()
                     .orElse(null);
@@ -203,8 +205,8 @@ public class EnrollmentController {
                 int newCourseID = updateCourseID.getText().isEmpty() ? existingEnrollment.getCourseID() : Integer.parseInt(updateCourseID.getText());
                 int newYear = updateYear.getText().isEmpty() ? existingEnrollment.getYear() : Integer.parseInt(updateYear.getText());
 
-                EnrollmentDAO updated = new EnrollmentDAO(id, newCourseID, newStudentID, newYear);
-                updated.updateEnrollmentRecord(id, newStudentID, newCourseID, newYear);
+                Enrollment updated = new Enrollment(id, newCourseID, newStudentID, newYear);
+                enrollmentDAO.updateEnrollmentRecord(id, newStudentID, newCourseID, newYear);
 
                 // Refresh the list to show all enrollments
                 enrollments.setAll(EnrollmentDAO.fetchAllEnrollments());
@@ -274,8 +276,7 @@ public class EnrollmentController {
             String conditionString = String.join(" AND ", conditions);
 
             // Query the DAO to get the filtered enrollments
-            EnrollmentDAO dao = new EnrollmentDAO(0);
-            List<EnrollmentDAO> validEnrollments = dao.searchEnrollmentRecord(colsString, conditionString);
+            List<Enrollment> validEnrollments = enrollmentDAO.searchEnrollmentRecord(colsString, conditionString);
             validEnrollments.removeIf(enrollment -> enrollment.getEnrollmentID() == -1); // Exclude invalid records
 
             // Set the filtered list to the ObservableList
