@@ -21,13 +21,14 @@ public class EnrollmentDAO {
 			stmt.close();
 		}
 		catch (SQLException e) {
+			System.out.println("Student ID or Course ID does not exist");
 			e.printStackTrace();
 		}
 		
 	}
 	
 	public void deleteEnrollmentRecord(int id) {
-		String sql = String.format("DELETE FROM Enrollment "
+		String sql = String.format("DELETE FROM Enrollments "
 				+ " WHERE enrollmentID = %d;", id);
 		
 		try {

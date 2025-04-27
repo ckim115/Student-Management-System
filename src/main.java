@@ -11,11 +11,12 @@ class MySQLConnection {
 	  StudentDAO sd = new StudentDAO();
 	  CourseDAO cd = new CourseDAO();
 	  EnrollmentDAO ed = new EnrollmentDAO();
-	  sd.searchStudentRecord("*", "first_name = 'Christina'");
-	  // ed.createEnrollmentRecord(6, 2, 0);
+	  // sd.searchStudentRecord("*", "first_name = 'Christina'");
+	  // ed.createEnrollmentRecord(15, 3, 0);
+	  // ed.deleteEnrollmentRecord(3);
 	  // cd.createCourseRecord("a", "b", "c");
 	  // cd.deleteCourseRecord(2);
 	  // sd.createStudentRecord("Christina", "Kim", "2020-01-09");
-	  // sd.deleteStudentRecord(3);
+	  // sd.deleteStudentRecord(4);
   }
 }
