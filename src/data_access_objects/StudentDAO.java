@@ -7,10 +7,20 @@ import data_structures.Student;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+/**
+ * The Data Access Object for the StudentController class
+ */
 public class StudentDAO {
-	// An instance of Connection for accessing the database
+	/** An instance of Connection for accessing the database*/
 	private Connection conn = MySQLConnection.getConnection();
 
+	/**
+	 * Creates a new student record in the database
+	 * @param fname		the first name of the student
+	 * @param lname		the last name of the student
+	 * @param date		the date enrolled
+	 * @return			the Student containing the information in the record
+	 */
 	public Student createStudentRecord(String fname, String lname, String date) {
 		int id = -1;
 		String sql = String.format("INSERT INTO Students "
@@ -40,6 +50,10 @@ public class StudentDAO {
 		return null;
 	}
 	
+	/**
+	 * Deletes the student record by a specified id
+	 * @param id	unique id of the student record
+	 */
 	public void deleteStudentRecord(int id) {
 		String sql = String.format("DELETE FROM Students "
 				+ " WHERE studentID = %d;", id);
@@ -56,6 +70,13 @@ public class StudentDAO {
 		
 	}
 	
+	/**
+	 * Update an existing grade record by a specified id
+	 * @param id			unique id of the student record
+	 * @param fname		the first name of the student
+	 * @param lname		the last name of the student
+	 * @param date		the date enrolled
+	 */
 	public void updateStudentRecord(int id, String fname, String lname, String date) {
 		String sql = String.format("UPDATE Students "
 				+ " SET first_name = '%s', last_name = '%s', birthdate = '%s'"
@@ -73,8 +94,10 @@ public class StudentDAO {
 	}
 
 	/**
+	 * Returns a list of student records meeting a given criteria
 	 * @param cols		The columns we are searching for in the database (such as "courseID, course_name")
 	 * @param cond		The conditions (such as "course_name = 'Math', instructor = 'Smith'")
+	 * @return			the list of Student objects meeting the criteria
 	 */
 	public List<Student> searchStudentRecord(String cols, String cond) {
 	    List<Student> results = new ArrayList<>();
@@ -115,7 +138,10 @@ public class StudentDAO {
 	    return results;
 	}
 
-
+	/**
+	 * Fetch all the grades in the Student table
+	 * @return	the list of Student objects
+	 */
 	public static ObservableList<Student> fetchAllStudents() {
 	    ObservableList<Student> studentList = FXCollections.observableArrayList();
 	    String sql = "SELECT * FROM Students"; // Update this table name if needed

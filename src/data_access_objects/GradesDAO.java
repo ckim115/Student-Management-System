@@ -11,10 +11,20 @@ import data_structures.Grade;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+/**
+ * The Data Access Object for the GradesController class
+ */
 public class GradesDAO {
+	/** An instance of Connection for accessing the database*/
 	private Connection conn = MySQLConnection.getConnection();
 	
-	// set relationship between existing class and student
+	/**
+	 * Creates a new grade record in the database
+	 * @param studentID		the foreign key from the Student table
+	 * @param courseID		the foreign key from the Course table
+	 * @param grade			the grade between 0-100 for the specific student-course grade record
+	 * @param semester		the semester (spring, fall, summer, winter) the course takes place in
+	 */
 	public void createGradeRecord(int studentID, int courseID, double grade, String semester) {
 		String sql = String.format("INSERT INTO Grades "
 				+ "(studentID, courseID, grade, semester) "
@@ -31,6 +41,10 @@ public class GradesDAO {
 		}
 	}
 	
+	/**
+	 * Deletes the grade record by a specified id
+	 * @param id	unique id of the grade record
+	 */
 	public void deleteGradeRecord(int id) {
 		String sql = String.format("DELETE FROM Grades "
 				+ " WHERE gradeID = %d;", id);
@@ -47,6 +61,14 @@ public class GradesDAO {
 		
 	}
 	
+	/**
+	 * Update an existing grade record by a specified id
+	 * @param id			unique id of the grade record
+	 * @param studentID		the foreign key from the Student table
+	 * @param courseID		the foreign key from the Course table
+	 * @param grade			the grade between 0-100 for the specific student-course grade record
+	 * @param semester		the semester (spring, fall, summer, winter) the course takes place in
+	 */
 	public void updateGradeRecord(int id, int studentID, int courseID, double grade, String semester) {
 		String sql = String.format("UPDATE Grades "
 				+ " SET studentID = %d, courseID = %d, grade = %d, semester = '%s'"
@@ -64,8 +86,10 @@ public class GradesDAO {
 	}
 	
 	/**
-	 * @param cols		The columns we are searching for in the database (such as "courseID, course_name")
-	 * @param cond		The conditions (such as "course_name = 'Math', instructor = 'Smith'")
+	 * Returns a list of grade records meeting a given criteria
+	 * @param cols		the columns we are searching for in the database (such as "courseID, course_name")
+	 * @param cond		the conditions (such as "course_name = 'Math', instructor = 'Smith'")
+	 * @return			the list of Grade objects meeting the criteria
 	 */
 	public List<Grade> searchGradeRecord(String cols, String cond) {
         List<Grade> results = new ArrayList<>();
@@ -104,6 +128,10 @@ public class GradesDAO {
         return results;
     }
 
+	/**
+	 * Fetch all the grades in the Grade table
+	 * @return	the list of Grade objects
+	 */
 	public static ObservableList<Grade> fetchAllGrades() {
 	    ObservableList<Grade> gradeList = FXCollections.observableArrayList();
 	    String sql = "SELECT * FROM Grades"; // Update this table name if needed
