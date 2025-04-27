@@ -9,12 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import data_access_objects.GradesDAO;
+import data_structures.Grade;
 import javafx.collections.*;
 import javafx.geometry.Orientation;
 
 public class GradesController {
     private Stage stage;
-    private ObservableList<GradesDAO> grades = FXCollections.observableArrayList(GradesDAO.fetchAllGrades());
+    private ObservableList<Grade> grades = FXCollections.observableArrayList(GradesDAO.fetchAllGrades());
+    private GradesDAO gradesDAO = new GradesDAO();
 
     public GradesController(Stage stage) {
         this.stage = stage;
@@ -22,22 +24,22 @@ public class GradesController {
 
     public void show() {
     	// make table for Grades
-        TableView<GradesDAO> table = new TableView<>(grades);
+        TableView<Grade> table = new TableView<>(grades);
         table.setPrefHeight(150);
 
-        TableColumn<GradesDAO, Integer> gradeIDCol = new TableColumn<>("Grade ID");
+        TableColumn<Grade, Integer> gradeIDCol = new TableColumn<>("Grade ID");
         gradeIDCol.setCellValueFactory(new PropertyValueFactory<>("gradeid"));
 
-        TableColumn<GradesDAO, Integer> studentIDCol = new TableColumn<>("Student ID");
+        TableColumn<Grade, Integer> studentIDCol = new TableColumn<>("Student ID");
         studentIDCol.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        TableColumn<GradesDAO, Integer> courseIDCol = new TableColumn<>("Course ID");
+        TableColumn<Grade, Integer> courseIDCol = new TableColumn<>("Course ID");
         courseIDCol.setCellValueFactory(new PropertyValueFactory<>("courseid"));
         
-        TableColumn<GradesDAO, Integer> gradeCol = new TableColumn<>("Grade");
+        TableColumn<Grade, Integer> gradeCol = new TableColumn<>("Grade");
         gradeCol.setCellValueFactory(new PropertyValueFactory<>("grade"));
 
-        TableColumn<GradesDAO, String> semesterYearCol = new TableColumn<>("Semester Year");
+        TableColumn<Grade, String> semesterYearCol = new TableColumn<>("Semester Year");
         semesterYearCol.setCellValueFactory(new PropertyValueFactory<>("semesteryear"));
 
         table.getColumns().addAll(gradeIDCol, courseIDCol, studentIDCol, gradeCol, semesterYearCol);
@@ -163,8 +165,8 @@ public class GradesController {
         
         // -- give actions to Add, Delete, Update, Search Buttons ---
         addBtn.setOnAction(e -> {
-        	GradesDAO gradeRecord = new GradesDAO(-1,Integer.parseInt(studentID.getText()), Integer.parseInt(courseID.getText()), Double.valueOf(grade.getText()), semester.getText());
-        	gradeRecord.createGradeRecord(Integer.parseInt(studentID.getText()), Integer.parseInt(courseID.getText()), Double.valueOf(grade.getText()), semester.getText());
+        	Grade gradeRecord = new Grade(-1,Integer.parseInt(studentID.getText()), Integer.parseInt(courseID.getText()), Double.valueOf(grade.getText()), semester.getText());
+        	gradesDAO.createGradeRecord(Integer.parseInt(studentID.getText()), Integer.parseInt(courseID.getText()), Double.valueOf(grade.getText()), semester.getText());
             grades.setAll(GradesDAO.fetchAllGrades());
             
             gradeIDCol.setVisible(true);
@@ -176,8 +178,8 @@ public class GradesController {
         
         deleteBtn.setOnAction(e -> {
             int id = Integer.parseInt(gradeID.getText());
-            GradesDAO deleteGrade = new GradesDAO(id);
-            deleteGrade.deleteGradeRecord(id);
+            Grade deleteGrade = new Grade(id);
+            gradesDAO.deleteGradeRecord(id);
             grades.setAll(GradesDAO.fetchAllGrades());
             
             gradeIDCol.setVisible(true);
@@ -190,7 +192,7 @@ public class GradesController {
         updateBtn.setOnAction(e -> {
         	int id = Integer.parseInt(requiredGradeID.getText());
 
-            GradesDAO existingGrade = grades.stream()
+            Grade existingGrade = grades.stream()
                 .filter(s -> s.getGradeid() == id)
                 .findFirst()
                 .orElse(null);
@@ -206,8 +208,8 @@ public class GradesController {
             String newYear = changeSemester.getText().isEmpty() ? existingGrade.getSemesteryear() : String.valueOf(changeSemester.getText());
             double newGrade = changeGrade.getText().isEmpty() ? existingGrade.getGrade() : Double.parseDouble(changeGrade.getText());
 
-            GradesDAO updated = new GradesDAO(id, newStudentID, newCourseID, newGrade,newYear);
-            updated.updateGradeRecord(id, newStudentID, newCourseID, newGrade, newYear);
+            Grade updated = new Grade(id, newStudentID, newCourseID, newGrade,newYear);
+            gradesDAO.updateGradeRecord(id, newStudentID, newCourseID, newGrade, newYear);
 
             grades.setAll(GradesDAO.fetchAllGrades());
             
@@ -274,8 +276,7 @@ public class GradesController {
             String conditionString = String.join(" AND ", conditions);
             
             // Query the DAO to get the filtered Grades
-            GradesDAO dao = new GradesDAO(0);
-            List<GradesDAO> validGrades = dao.searchGradeRecord(colsString, conditionString);
+            List<Grade> validGrades = gradesDAO.searchGradeRecord(colsString, conditionString);
             validGrades.removeIf(enrollment -> enrollment.getGradeid() == -1); // Exclude invalid records
             
             // Set the filtered list to the ObservableList

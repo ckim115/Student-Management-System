@@ -7,32 +7,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import data_structures.Grade;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class GradesDAO {
 	private Connection conn = MySQLConnection.getConnection();
 	
-
-	private int gradeID;
-	private int studentID;
-	private int courseID;
-	private double grade;
-	private String semester;
-	
-	public GradesDAO(int gradeID, int sID, int cID, double grade, String semester) {
-		this.gradeID = gradeID;
-		studentID = sID;
-		courseID = cID;
-		this.grade = grade;
-		this.semester = semester;
-	}
-
-	public GradesDAO(int id) {
-		// TODO Auto-generated constructor stub
-		gradeID = id;
-	}
-
 	// set relationship between existing class and student
 	public void createGradeRecord(int studentID, int courseID, double grade, String semester) {
 		String sql = String.format("INSERT INTO Grades "
@@ -48,7 +29,6 @@ public class GradesDAO {
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public void deleteGradeRecord(int id) {
@@ -87,8 +67,8 @@ public class GradesDAO {
 	 * @param cols		The columns we are searching for in the database (such as "courseID, course_name")
 	 * @param cond		The conditions (such as "course_name = 'Math', instructor = 'Smith'")
 	 */
-	public List<GradesDAO> searchGradeRecord(String cols, String cond) {
-        List<GradesDAO> results = new ArrayList<>();
+	public List<Grade> searchGradeRecord(String cols, String cond) {
+        List<Grade> results = new ArrayList<>();
         String sql = String.format("SELECT %s FROM Grades", cols);
         if (!cond.isEmpty()) {
             sql += " WHERE " + cond;
@@ -112,7 +92,7 @@ public class GradesDAO {
                 double grade = hasGrade ? rs.getDouble("grade") : -1.0;
                 String semester = hasSemester ? rs.getString("semester") : null;
 
-                results.add(new GradesDAO(gradeID, studentID, courseID, grade, semester));
+                results.add(new Grade(gradeID, studentID, courseID, grade, semester));
             }
 
             rs.close();
@@ -123,9 +103,9 @@ public class GradesDAO {
 
         return results;
     }
-	
-	public static ObservableList<GradesDAO> fetchAllGrades() {
-	    ObservableList<GradesDAO> gradeList = FXCollections.observableArrayList();
+
+	public static ObservableList<Grade> fetchAllGrades() {
+	    ObservableList<Grade> gradeList = FXCollections.observableArrayList();
 	    String sql = "SELECT * FROM Grades"; // Update this table name if needed
 
 	    try (Connection conn = MySQLConnection.getConnection();
@@ -139,7 +119,7 @@ public class GradesDAO {
 	    		double gradeVal = rs.getDouble("grade");
 	    		String semesterGrade = rs.getString("semester");
 
-	    		GradesDAO grades = new GradesDAO(gID, sID, cID, gradeVal, semesterGrade);
+	    		Grade grades = new Grade(gID, sID, cID, gradeVal, semesterGrade);
 	    		gradeList.add(grades);
 	    	}
 
@@ -149,25 +129,5 @@ public class GradesDAO {
 	    }
 
 	    return gradeList;
-	}
-	
-	public int getId() {
-		return studentID;
-	}
-	
-	public int getCourseid() {
-		return courseID;
-	}
-	
-	public double getGrade() {
-		return grade;
-	}
-	
-	public String getSemesteryear() {
-		return semester;
-	}
-	
-	public int getGradeid() {
-		return gradeID;
 	}
 }
