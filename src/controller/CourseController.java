@@ -9,13 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import data_access_objects.CourseDAO;
+import data_structures.Course;
 import javafx.collections.*;
 import javafx.geometry.Orientation;
 
 public class CourseController {
     private Stage stage;
-    private ObservableList<CourseDAO> courses = FXCollections.observableArrayList(CourseDAO.fetchAllCourses());
-
+    private ObservableList<Course> courses = FXCollections.observableArrayList(CourseDAO.fetchAllCourses());
+    private CourseDAO courseDAO = new CourseDAO();
+    
     public CourseController(Stage stage) {
         this.stage = stage;
     }
@@ -25,16 +27,16 @@ public class CourseController {
         layout.setStyle("-fx-padding: 20px");
         
         // make the table for courses
-        TableView<CourseDAO> table = new TableView<>(courses);
+        TableView<Course> table = new TableView<>(courses);
         table.setPrefHeight(150);
         
-        TableColumn<CourseDAO, Integer> idCourse = new TableColumn<>("Course ID");
+        TableColumn<Course, Integer> idCourse = new TableColumn<>("Course ID");
         idCourse.setCellValueFactory(new PropertyValueFactory<>("id"));
-        TableColumn<CourseDAO, String> courseNameCol = new TableColumn<>("Course Name");
+        TableColumn<Course, String> courseNameCol = new TableColumn<>("Course Name");
         courseNameCol.setCellValueFactory(new PropertyValueFactory<>("courseName"));
-        TableColumn<CourseDAO, String> teacherNameCol = new TableColumn<>("Teacher Name");
+        TableColumn<Course, String> teacherNameCol = new TableColumn<>("Teacher Name");
         teacherNameCol.setCellValueFactory(new PropertyValueFactory<>("instructor"));
-        TableColumn<CourseDAO, Integer> semesterYear = new TableColumn<>("Semester");
+        TableColumn<Course, Integer> semesterYear = new TableColumn<>("Semester");
         semesterYear.setCellValueFactory(new PropertyValueFactory<>("semester"));
         table.getColumns().addAll(idCourse, courseNameCol, teacherNameCol, semesterYear);
 
@@ -136,8 +138,8 @@ public class CourseController {
         
         // add actions to add, delete, update, search buttons
         addBtn.setOnAction(e -> {
-            CourseDAO course = new CourseDAO(-1, name.getText(), teacher.getText(), semester.getText());
-            course.createCourseRecord(name.getText(), teacher.getText(), semester.getText());
+            Course course = new Course(-1, name.getText(), teacher.getText(), semester.getText());
+            courseDAO.createCourseRecord(name.getText(), teacher.getText(), semester.getText());
             courses.setAll(CourseDAO.fetchAllCourses());
             
             // make sure all columns visible in case filter button was used
@@ -150,8 +152,8 @@ public class CourseController {
         deleteBtn.setOnAction(e -> {
             try {
                 int id = Integer.parseInt(deleteByID.getText());
-                CourseDAO course = new CourseDAO(id);
-                course.deleteCourseRecord(id);
+                Course course = new Course(id);
+                courseDAO.deleteCourseRecord(id);
                 courses.setAll(CourseDAO.fetchAllCourses());
                 
              // make sure all columns visible in case filter button was used
@@ -167,7 +169,7 @@ public class CourseController {
         updateBtn.setOnAction(e -> {
             try {
                 int id = Integer.parseInt(updateByID.getText());
-                CourseDAO existing = courses.stream()
+                Course existing = courses.stream()
                     .filter(c -> c.getId() == id)
                     .findFirst()
                     .orElse(null);
@@ -180,8 +182,8 @@ public class CourseController {
                 String teacherName = updateLast.getText().isEmpty()   ? existing.getInstructor(): updateLast.getText();
                 String semesterVal = updateSemester.getText().isEmpty() ? existing.getSemester()   : updateSemester.getText();
 
-                CourseDAO c = new CourseDAO(id, courseName, teacherName, semesterVal);
-                c.updateCourseRecord(id, courseName, teacherName, semesterVal);
+                Course c = new Course(id, courseName, teacherName, semesterVal);
+                courseDAO.updateCourseRecord(id, courseName, teacherName, semesterVal);
                 
                 // make sure all columns visible in case filter button was used
                 idCourse.setVisible(true);
@@ -238,8 +240,7 @@ public class CourseController {
             String conditionString = String.join(" AND ", conditions);
             
             // Query the DAO to get the filtered courses
-            CourseDAO dao = new CourseDAO(0);
-            List<CourseDAO> validCourses = dao.searchCourseRecord(colsString, conditionString);
+            List<Course> validCourses = courseDAO.searchCourseRecord(colsString, conditionString);
             validCourses.removeIf(course -> course.getId() == -1); // Exclude invalid records
             
             // Set the filtered list to the ObservableList
