@@ -7,9 +7,21 @@ import data_structures.Course;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+/**
+ * Data Accessing Object for our Course table. Handling our create, update, delete operations.
+ */
 public class CourseDAO {
-	// An instance of Connection for accessing the database
+	/** An instance of Connection for accessing the database*/
 	private Connection conn = MySQLConnection.getConnection();
+	
+    /**
+     * Creates a new course record in the database.
+     *
+     * @param course_name	The name of the course.
+     * @param instructor	The instructor of the course.
+     * @param semester		The semester the course is offered.
+     * @return				A Course object representing the newly created record, or null if creation failed.
+     */
 	
 	public Course createCourseRecord(String course_name, String instructor, String semester) {
 		int id = -1;
@@ -38,6 +50,12 @@ public class CourseDAO {
 		return null;
 	}
 	
+    /**
+     * Deletes a course record from the database by its ID.
+     *
+     * @param	id The ID of the course to delete.
+     */
+	
 	public void deleteCourseRecord(int id) {
 		String sql = String.format("DELETE FROM Courses "
 				+ " WHERE courseID = %d;", id);
@@ -53,6 +71,15 @@ public class CourseDAO {
 		}
 		
 	}
+	
+    /**
+     * Updates an existing course record in the database.
+     *
+     * @param id			The ID of the course to update.
+     * @param course_name	The new course name.
+     * @param instructor	The new instructor name.
+     * @param semester		The new semester.
+     */
 	
 	public void updateCourseRecord(int id, String course_name, String instructor, String semester) {
 	    // Use String.format() correctly, ensuring %s for string parameters and %d for the ID
@@ -70,10 +97,13 @@ public class CourseDAO {
 	    }
 	}
 	
-	/**
-	 * @param cols		The columns we are searching for in the database (such as courseID)
-	 * @param cond		The conditions (such as "course_name = 'Math', instructor = 'Smith'")
-	 */
+    /**
+     * Searches for course records based on specified columns and conditions.
+     *
+     * @param cols	The columns to select.
+     * @param cond	The condition for selection.
+     * @return		A list of Course objects matching the search criteria.
+     */
 	public List<Course> searchCourseRecord(String cols, String cond) {
 	    List<Course> results = new ArrayList<>();
 	    String sql = String.format("SELECT %s FROM Courses", cols);
@@ -84,6 +114,7 @@ public class CourseDAO {
 	    // Debugging output
 	    System.out.println(sql);
 
+	    // Checking which fields are included
 	    String lowerCols = cols.toLowerCase().replaceAll("\\s+", "");
 	    boolean hasCourseID = lowerCols.contains("courseid") || lowerCols.equals("*");
 	    boolean hasCourseName = lowerCols.contains("course_name") || lowerCols.equals("*");
@@ -113,6 +144,12 @@ public class CourseDAO {
 	    return results;
 	}
 
+    /**
+     * Fetches all course records from the database.
+     *
+     * @return	An ObservableList of all Course objects in the database.
+     */
+	
 	public static ObservableList<Course> fetchAllCourses() {
 	    ObservableList<Course> courseList = FXCollections.observableArrayList();
 	    String sql = "SELECT * FROM Courses"; // Update this table name if needed

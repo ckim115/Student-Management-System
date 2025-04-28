@@ -11,10 +11,20 @@ import data_structures.Enrollment;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+/**
+ * Data Accessing Object for our Enrollment table. Handling our create, update, delete operations.
+ */
 public class EnrollmentDAO {
+	/** An instance of Connection for accessing the database*/
 	private Connection conn = MySQLConnection.getConnection();
 	
-	// set relationship between existing class and student
+	/**
+	 * Creates a new enrollment record in the database.
+	 * @param studentID		the foreign key from the Student table
+	 * @param courseID		the foreign key from the Course table
+	 * @param year			the year of the enrollment
+	 * @return
+	 */
 	public Enrollment createEnrollmentRecord(int studentID, int courseID, int year) {
 		int enrollID = -1;
 		String sql = String.format("INSERT INTO Enrollment "
@@ -43,6 +53,10 @@ public class EnrollmentDAO {
 		return null;
 	}
 	
+	/**
+	 * Deletes the enrollment record by a specified id
+	 * @param id	unique enrollment id
+	 */
 	public void deleteEnrollmentRecord(int id) {
 		String sql = String.format("DELETE FROM Enrollments "
 				+ " WHERE enrollmentID = %d;", id);
@@ -59,6 +73,13 @@ public class EnrollmentDAO {
 		
 	}
 	
+	/**
+	 * Updates an existing entry in the Enrollment table by the id
+	 * @param id			unique enrollment id
+	 * @param studentID		student id
+	 * @param courseID		course id
+	 * @param year			year of enrollment
+	 */
 	public void updateEnrollmentRecord(int id, int studentID, int courseID, int year) {
 		String sql = String.format(
 			    "UPDATE Enrollment SET studentID = %d, courseID = %d, year = %d WHERE enrollmentID = %d;",
@@ -77,6 +98,7 @@ public class EnrollmentDAO {
 	}
 	
 	/**
+	 * Returns a list of Enrollments containing records meeting the criteria
 	 * @param cols		The columns we are searching for in the database (such as "courseID, course_name")
 	 * @param cond		The conditions (such as "course_name = 'Math', instructor = 'Smith'")
 	 * @return 
@@ -119,6 +141,10 @@ public class EnrollmentDAO {
 	    return results;
 	}
 	
+	/**
+	 * Fetch all the enrollments in the Enrollment table
+	 * @return	the list of Enrollment objects
+	 */
 	public static ObservableList<Enrollment> fetchAllEnrollments() {
 		// TODO Auto-generated method stub
 		ObservableList<Enrollment> enrollmentList = FXCollections.observableArrayList();
