@@ -5,7 +5,7 @@ CREATE TABLE `Students` (
   `birthdate` date DEFAULT NULL,
   PRIMARY KEY (`studentID`),
   UNIQUE KEY `studentID_UNIQUE` (`studentID`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `Courses` (
   `courseID` int NOT NULL AUTO_INCREMENT,
@@ -14,7 +14,7 @@ CREATE TABLE `Courses` (
   `semester` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`courseID`),
   UNIQUE KEY `courseID_UNIQUE` (`courseID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `Enrollments` (
   `enrollmentID` int NOT NULL AUTO_INCREMENT,
@@ -27,7 +27,7 @@ CREATE TABLE `Enrollments` (
   KEY `fk_course_idx` (`courseID`),
   CONSTRAINT `fk_course` FOREIGN KEY (`courseID`) REFERENCES `Courses` (`courseID`) ON DELETE CASCADE,
   CONSTRAINT `fk_student` FOREIGN KEY (`studentID`) REFERENCES `Students` (`studentID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `Grades` (
   `gradeID` int NOT NULL AUTO_INCREMENT,
@@ -41,4 +41,4 @@ CREATE TABLE `Grades` (
   KEY `fk2_course_idx` (`courseID`),
   CONSTRAINT `fk2_course` FOREIGN KEY (`courseID`) REFERENCES `Courses` (`courseID`) ON DELETE CASCADE,
   CONSTRAINT `fk2_student` FOREIGN KEY (`studentID`) REFERENCES `Students` (`studentID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
